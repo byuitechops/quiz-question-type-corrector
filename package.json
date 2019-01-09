@@ -1,0 +1,32 @@
+{
+  "name": "quiz-question-type-corrector",
+  "version": "1.0.0",
+  "description": "Fixes the question types that converted incorrectly from Brightspace to Canvas.",
+  "main": "bin.js",
+  "scripts": {
+    "start": "node bin.js",
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/byuitechops/quiz-question-type-corrector.git"
+  },
+  "keywords": [
+    "Canvas",
+    "Quiz",
+    "Question",
+    "Type",
+    "Corrector"
+  ],
+  "author": "Cal Wilson, Seth Bolander",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/byuitechops/quiz-question-type-corrector/issues"
+  },
+  "homepage": "https://github.com/byuitechops/quiz-question-type-corrector#readme",
+  "dependencies": {
+    "canvas-api-wrapper": "^3.3.5",
+    "d3-dsv": "^1.0.10",
+    "inquirer": "^6.2.1"
+  }
+}

@@ -39,7 +39,7 @@ function getQuizzes(courseID, callback) {
 
 function main(courseIDs, callback) {
     asyncLib.mapLimit(courseIDs, 10, getQuizzes, (err, data) => {
-        data = data[0][24];
+        data = data[0];
         if (err) {
             console.error(err);
             callback(err, null);

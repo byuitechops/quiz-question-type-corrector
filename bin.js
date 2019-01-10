@@ -49,6 +49,12 @@ function getInput(callback) {
 
 function getOutput(err, output) {
     // How to output data, eg. to csv, to json, to console, etc.
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log(output);
+    console.log('Tool Finished Successfully');
     return;
 }
 

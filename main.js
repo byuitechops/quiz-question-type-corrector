@@ -3,6 +3,9 @@
  *************************************************************************/
 const asyncLib = require('async');
 const canvas = require('canvas-api-wrapper');
+const tasks = require('./tasks/tasks.js');
+
+const badQuestionTypes = ['multiple_choice_question', 'matching_question', ''];
 
 function getQuizQuestions(quizObj, callback) {
     canvas.getQuizQuestions(quizObj.courseID, quizObj.id, (err, questions) => {
@@ -10,14 +13,17 @@ function getQuizQuestions(quizObj, callback) {
             callback(err, null);
             return;
         }
-        callback(null, questions);
+        // Filter the questions to just the ones we need to fix
+        let filteredQuestions = questions.filter(question => {
+            return badQuestionTypes.includes(question.question_type);
+        });
+        callback(null, filteredQuestions);
     });
 }
 
 function getQuizzes(courseID, callback) {
     canvas.getQuizzes(courseID, (err, quizzes) => {
         if (err) {
-            console.error(err);
             callback(err, null);
             return;
         }
@@ -38,18 +44,30 @@ function getQuizzes(courseID, callback) {
 }
 
 function main(courseIDs, callback) {
-    asyncLib.mapLimit(courseIDs, 10, getQuizzes, (err, data) => {
-        data = data[0];
+    asyncLib.mapLimit(courseIDs, 10, getQuizzes, (err, quizQuestions) => {
+        quizQuestions = quizQuestions[0];
         if (err) {
-            console.error(err);
             callback(err, null);
             return;
         }
-        console.dir(data, {
-            depth: null
-        });
-        console.log(data.length);
-        callback(null, data);
+        let totalQuestionLength = quizQuestions.reduce((acc, curr) => {
+            acc += curr.length;
+            return acc;
+        }, 0);
+        if (totalQuestionLength > 0) {
+            console.log('Quiz questions successfully retrieved');
+            // Start running checks and fixes on bad question types
+            asyncLib.waterfall(tasks, (err, result) => {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    callback(null, result);
+                }
+            });
+        } else {
+            callback(null, 'Questions with bad question types were not found');
+        }
+
     });
 }
 
